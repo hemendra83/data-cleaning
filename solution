@@ -1,0 +1,23 @@
+import pandas as pd
+import numpy as np
+import os
+import matplotlib.pyplot as plt
+%matplotlib inline
+df = pd.DataFrame({'From_To': ['LoNDon_paris', 'MAdrid_miLAN', 
+'londON_StockhOlm',
+'Budapest_PaRis', 'Brussels_londOn'],
+'FlightNumber': [10045, np.nan, 10065, np.nan, 10085],
+'RecentDelays': [[23, 47], [], [24, 43, 87], [13], [67, 32]],
+'Airline': ['KLM(!)', '<Air France> (12)', '(British Airways. )',
+'12. Air France', '"Swiss Air"']})
+print(df)
+df.fillna(value=df['FlightNumber'][0]+ 10, limit=1, inplace=True)
+df.fillna(value=df['FlightNumber'][2]+ 10, limit=1, inplace=True)
+temp_data=pd.DataFrame(df['From_To'].str.split('_',1).to_list(), columns=['From','To'])
+temp_data['From']= temp_data['From'].str.capitalize()
+temp_data['To']= temp_data['To'].str.capitalize()
+df.drop('From_To',inplace=True, axis=1)
+df=pd.concat([temp_data, df],axis = 1, sort = False)
+delays=pd.DataFrame(df['RecentDelays'].to_list(),columns=['delay_1', 'delay_2', 'delay_3'])
+df.drop('RecentDelays',inplace=True, axis=1)
+df=pd.concat([df,delays],axis = 1, sort = False)
